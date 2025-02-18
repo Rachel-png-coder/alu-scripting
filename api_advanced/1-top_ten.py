@@ -2,10 +2,9 @@
 """A module to query the Reddit API for hot posts."""
 import requests
 
-
 def top_ten(subreddit):
     """Prints the titles of the first 10 hot posts listed in a subreddit."""
-    url = "https://www.reddit.com/r/{}/hot.json?limit=10".format(subreddit)
+    url = f"https://www.reddit.com/r/{subreddit}/hot.json?limit=10"
 
     # Send a GET request to the subreddit URL
     res = requests.get(
@@ -14,7 +13,7 @@ def top_ten(subreddit):
 
     # Check if the request was successful
     if res.status_code != 200:
-        print("OK", end="")
+        print("OK")  # Only prints OK when request fails
         return
 
     # Parse the JSON response
@@ -24,12 +23,6 @@ def top_ten(subreddit):
     # Print the titles of the first 10 hot posts
     for post in posts:
         print(post.get("data", {}).get("title"))
-
-    print("OK", end="")
-
-    import sys
-
-    sys.stdout.write("")
 
 # Test the function with the learnpython subreddit
 top_ten("learnpython")
