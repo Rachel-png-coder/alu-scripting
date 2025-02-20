@@ -1,47 +1,36 @@
 #!/usr/bin/python3
-'''
-A module containing functions for working with the Reddit API.
-The module retrieves the titles of the top 10 posts from a given subreddit.
-'''
-
+"""
+function that queries the 'Reddit API'
+and prints the titles of the first 10 hot posts listed for a given subreddit.
+"""
 import requests
 
-BASE_URL = 'https://www.reddit.com'
-'''Reddit's base API URL.'''
-
 def top_ten(subreddit):
-    '''Retrieves the title of the top ten posts from a given subreddit.'''
-    api_headers = {
-        'Accept': 'application/json',
-        'User-Agent': ' '.join([
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-            'AppleWebKit/537.36 (KHTML, like Gecko)',
-            'Chrome/97.0.4692.71',
-            'Safari/537.36',
-            'Edg/97.0.1072.62'
-        ])
-    }
-    sort = 'top'
-    limit = 10
-    res = requests.get(
-        '{}/r/{}/.json?sort={}&limit={}'.format(
-            BASE_URL,
-            subreddit,
-            sort,
-            limit
-        ),
-        headers=api_headers,
-        allow_redirects=False
-    )
+    """ prints the titles of the first 10 hot posts listed in a subreddit """
+    url = f"https://www.reddit.com/r/{subreddit}/hot.json?limit=10"  # Correct URL
+    headers = {'User-Agent': 'Mozilla/5.0'}
 
-    # If the status code is 200, the subreddit exists
-    if res.status_code == 200:
-        try:
-            # Print the titles of the top 10 posts
-            for post in res.json()['data']['children'][0:10]:
-                print(post['data']['title'])
-        except KeyError:
-            print(None)
-    else:
+    try:
+        response = requests.get(url, headers=headers, allow_redirects=False)  # Prevent redirects
+        response.raise_for_status()  # Raise HTTPError for bad responses (4xx or 5xx)
 
-        print("OK") 
+        data = response.json()
+
+        if 'data' in data and 'children' in data['data']:  # Check for key existence
+            posts = data['data']['children']
+            if not posts: # Handle empty subreddits
+                print(None)
+                return
+
+            for post in posts:
+                if 'data' in post and 'title' in post['data']: # Check if the necessary keys exist
+                    print(post['data']['title'])
+                else:
+                    print(None) # Handle cases where a post doesn't have a title
+        else:
+            print(None)  # Handle unexpected JSON structure
+
+    except requests.exceptions.RequestException:  # Catch all request-related errors
+        print(None)
+    except (KeyError, TypeError): # Handle potential JSON parsing errors
+        print(None)
