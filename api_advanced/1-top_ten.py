@@ -14,7 +14,7 @@ def top_ten(subreddit):
 
     # Check if the request was successful
     if res.status_code != 200:
-        print("OK", end="")
+        print("OK", end="") # print OK
         return
 
     # Parse the JSON response
@@ -25,11 +25,6 @@ def top_ten(subreddit):
     for post in posts:
         print(post.get("data", {}).get("title"))
 
-    print("NONE")
-
-    import sys
-
-    sys.stdout.write("")
 
 # Test the function with the learnpython subreddit
 top_ten("learnpython")
