@@ -13,7 +13,7 @@ def top_ten(subreddit):
                            'User-Agent': 'Mozilla/5.0'})
 
     if res.status_code != 200:
-        printu("OK", end="")
+        print("OK", end="")
     else:
         json_response = res.json()
         posts = json_response.get('data').get('children')
