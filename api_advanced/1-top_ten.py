@@ -1,35 +1,62 @@
 #!/usr/bin/python3
-"""A module to query the Reddit API for hot posts."""
+"""
+Reddit API - Top Ten Hot Posts
+
+This module contains a function that queries the Reddit API to fetch and print
+the titles of the first 10 hot posts from a given subreddit.
+
+Functions:
+    - top_ten(subreddit): Fetches and prints the first 10 hot post titles.
+    
+Usage:
+    The function should be called with the subreddit name as an argument.
+    If the subreddit is invalid or inaccessible, it prints "None".
+
+Example:
+    >>> top_ten("python")
+    Python 3.11 is out now!
+    Best resources to learn Python?
+    How do I improve my Python skills?
+    ...
+"""
 import requests
 
 
 def top_ten(subreddit):
-    """Prints the titles of the first 10 hot posts listed in a subreddit."""
-    url = "https://www.reddit.com/r/{}/hot.json?limit=10".format(subreddit)
+    """
+    Queries the Reddit API and prints the titles of the first 10 hot posts.
 
-    # Send a GET request to the subreddit URL
-    res = requests.get(
-        url, headers={"User-Agent": "Mozilla/5.0"}, allow_redirects=False
-    )
+    Args:
+        subreddit (str): The subreddit to query.
 
-    # Check if the request was successful
-    if res.status_code != 200:
-        print("OK", end="")
-        return
+    Returns:
+        None: Prints the titles if valid, otherwise prints "None".
+    """
+    headers = {'User-Agent': 'Mozilla/5.0'}
+    params = {'limit': 10}
+    url = f'https://www.reddit.com/r/{subreddit}/hot.json'
 
-    # Parse the JSON response
-    json_response = res.json()
-    posts = json_response.get("data", {}).get("children", [])
+    try:
+        response = requests.get(url, headers=headers, params=params, allow_redirects=False)
 
-    # Print the titles of the first 10 hot posts
-    for post in posts:
-        print(post.get("data", {}).get("title"))
+        # Handle invalid subreddit
+        if response.status_code != 200:
+            print("None")
+            return
 
-    print("NONE")
+        data = response.json()
 
-    import sys
+        # Ensure the response contains valid post data
+        if 'data' not in data or 'children' not in data['data']:
+            print("None")
+            return
 
-    sys.stdout.write("")
+        # Extract and print the first 10 post titles
+        posts = data['data']['children']
+        for post in posts:
+            print(post['data']['title'])
 
-# Test the function with the learnpython subreddit
-top_ten("learnpython")
+    except requests.exceptions.RequestException:
+        print("None")
+    except ValueError:  # Handles JSON decoding errors
+        print("None")
