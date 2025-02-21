@@ -44,5 +44,4 @@ def top_ten(subreddit):
         except KeyError:
             print(None)
     else:
-
-        print("OK") 
+        print("OK", end="")
