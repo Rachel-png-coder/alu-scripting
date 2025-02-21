@@ -1,31 +1,35 @@
 #!/usr/bin/python3
-"""A module to query the Reddit API for hot posts."""
+"""
+Fetches and prints the titles of the first 10 hot posts from a given subreddit.
+
+Functions:
+    top_ten(subreddit): Fetches and prints the top 10 hot posts.
+
+Usage:
+    Call top_ten("subreddit_name") with a valid subreddit name.
+"""
+
 import requests
 
 
 def top_ten(subreddit):
-    """Prints the titles of the first 10 hot posts listed in a subreddit."""
-    url = "https://www.reddit.com/r/{}/hot.json?limit=10".format(subreddit)
+    """Prints the titles of the first 10 hot posts from a subreddit."""
+    url = f"https://www.reddit.com/r/{subreddit}/hot.json?limit=10"
+    headers = {"User-Agent": "Mozilla/5.0 (compatible; top_ten_script/1.0)"}
 
-    # Send a GET request to the subreddit URL
-    res = requests.get(
-        url, headers={"User-Agent": "Mozilla/5.0"}, allow_redirects=False
-    )
+    response = requests.get(url, headers=headers, allow_redirects=False)
 
-    # Check if the request was successful
-    if res.status_code != 200:
-        print("OK", end="")
+    if response.status_code != 200:
+        print("None")
         return
 
-    # Parse the JSON response
-    json_response = res.json()
-    posts = json_response.get("data", {}).get("children", [])
+    posts = response.json().get("data", {}).get("children", [])
 
-    # Print the titles of the first 10 hot posts
+    if not posts:
+        print("None")
+        return
+
     for post in posts:
-        print(post.get("data", {}).get("title"))
+        print(post["data"]["title"])
 
-    print("OK", end="")  # Ensure this prints after the titles
-
-# Test the function with the learnpython subreddit
-top_ten("learnpython")
+    print("OK")
