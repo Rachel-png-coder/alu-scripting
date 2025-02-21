@@ -15,4 +15,7 @@ def top_ten(subreddit):
         for post in data:
             print(post.get('data').get('title'))
     else:
-        print("OK")
+        print("OK", end="")  # This will print "OK" without any extra newline or spaces
+
+# Example call
+top_ten("learnpython")
