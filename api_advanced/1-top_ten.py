@@ -1,24 +1,35 @@
 #!/usr/bin/python3
-"""Script that fetch 10 hot post for a given subreddit."""
+"""A module to query the Reddit API for hot posts."""
 import requests
 
 
 def top_ten(subreddit):
-    """Return number of subscribers if @subreddit is valid subreddit.
-    if not return 0."""
+    """Prints the titles of the first 10 hot posts listed in a subreddit."""
+    url = "https://www.reddit.com/r/{}/hot.json?limit=10".format(subreddit)
 
-    headers = {'User-Agent': 'MyAPI/0.0.1'}
-    subreddit_url = "https://reddit.com/r/{}.json".format(subreddit)
-    response = requests.get(subreddit_url, headers=headers)
+    # Send a GET request to the subreddit URL
+    res = requests.get(
+        url, headers={"User-Agent": "Mozilla/5.0"}, allow_redirects=False
+    )
 
-    if response.status_code == 200:
-        json_data = response.json()
-        for i in range(10):
-            print(
-                json_data.get('data')
-                .get('children')[i]
-                .get('data')
-                .get('title')
-            )
-    else:
-        print('OK', end='')
+    # Check if the request was successful
+    if res.status_code != 200:
+        print("OK", end="")
+        return
+
+    # Parse the JSON response
+    json_response = res.json()
+    posts = json_response.get("data", {}).get("children", [])
+
+    # Print the titles of the first 10 hot posts
+    for post in posts:
+        print(post.get("data", {}).get("title"))
+
+    print("OK", end="")
+
+    import sys
+
+    sys.stdout.write("")
+
+# Test the function with the learnpython subreddit
+top_ten("learnpython")
