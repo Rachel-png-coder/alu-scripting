@@ -1,30 +1,29 @@
 #!/usr/bin/python3
-'''
-Defines function that prints the top ten posts of a subreddit
-'''
+"""A module to query the Reddit API for hot posts."""
 import requests
 
 
 def top_ten(subreddit):
-    '''Prints the top ten posts of a subreddit
+    """Prints the titles of the first 10 hot posts listed in a subreddit."""
+    url = "https://www.reddit.com/r/{}/hot.json?limit=10".format(subreddit)
 
-    Return:
-        None -  if the subreddit is invalid
-    '''
-    if subreddit is None or not isinstance(subreddit, str):
-        print(None)
-        return  # Add return to exit the function early
+    # Send a GET request to the subreddit URL
+    res = requests.get(
+        url, headers={"User -Agent": "Mozilla/5.0"}, allow_redirects=False
+    )
 
-    endpoint = 'https://www.reddit.com'
-    headers = {'user-agent': '0x16-api_advanced:project:v1.0.0 (by /u/shobi_ola)'}
-    params = {'limit': 10}
-    info = requests.get('{}/r/{}/hot.json'.format(endpoint, subreddit),
-                        allow_redirects=False,
-                        headers=headers,
-                        params=params)
-    if info.status_code == 200:
-        json_info = info.json()
-        for post in json_info.get('data').get('children'):
-            print(post.get('data').get('title'))
-    else:
-        print(None)  # Print None for invalid subreddit
+    # Check if the request was successful
+    if res.status_code != 200:
+        print("OK", end="")  # Print "OK" if the subreddit is invalid
+        return
+
+    # Parse the JSON response
+    json_response = res.json()
+    posts = json_response.get("data", {}).get("children", [])
+
+    # Print the titles of the first 10 hot posts
+    for post in posts:
+        print(post.get("data", {}).get("title"))
+
+# Test the function with the learnpython subreddit
+top_ten("learnpython")
