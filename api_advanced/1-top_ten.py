@@ -1,20 +1,38 @@
 #!/usr/bin/python3
-"""" Top Ten Limit"""
+"""Prints the title of the first 10 hot posts listed for a given subreddit"""
+
 import requests
 
 
 def top_ten(subreddit):
-    """"top ten"""
-    url = "https://www.reddit.com/r/{}/hot.json?limit=10" \
-        .format(subreddit)
+    """Fetches and prints the first 10 hot post titles of a given subreddit."""
+    if not subreddit or not isinstance(subreddit, str):
+        print(None)
+        return
 
-    res = requests.get(url,
-                       headers={
-                           'User-Agent': 'Mozilla/5.0'})
+    url = f"https://www.reddit.com/r/{subreddit}/hot.json?limit=10"
+    headers = {"User-Agent": "MyRedditBot/1.0"}
 
-    if res.status_code != 200:
-        print("OK", end="")
-    else:
-        json_response = res.json()
-        posts = json_response.get('data').get('children')
-        [print(post.get('data').get('title')) for post in posts]
+    try:
+        response = requests.get(url, headers=headers, allow_redirects=False)
+        
+        # Check if status code indicates failure
+        if response.status_code != 200:
+            print(None)
+            return
+
+        data = response.json().get("data")
+        if not data:
+            print(None)
+            return
+
+        posts = data.get("children", [])
+        if not posts:
+            print(None)
+            return
+
+        for post in posts:
+            print(post["data"].get("title", None))
+
+    except Exception:
+        print(None)
