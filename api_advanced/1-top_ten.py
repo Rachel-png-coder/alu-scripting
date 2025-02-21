@@ -25,5 +25,5 @@ def top_ten(subreddit):
     for post in posts:
         print(post.get("data", {}).get("title"))
 
-# Test the function with the learnpython subreddit
-top_ten("learnpython")
+# Test the function with an invalid subreddit to see "OK"
+top_ten("invalid_subreddit")  # Change this to test with an invalid subreddit
