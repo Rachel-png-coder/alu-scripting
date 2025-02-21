@@ -21,4 +21,4 @@ def top_ten(subreddit):
                 .get('title')
             )
     else:
-        print(None)
+        print("OK", end="")
