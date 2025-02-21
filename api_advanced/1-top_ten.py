@@ -1,4 +1,3 @@
-
 #!/usr/bin/python3
 '''
 Defines function that prints the top ten posts of a subreddit
@@ -14,9 +13,10 @@ def top_ten(subreddit):
     '''
     if subreddit is None or not isinstance(subreddit, str):
         print(None)
+        return  # Add return to exit the function early
+
     endpoint = 'https://www.reddit.com'
-    headers = {'user-agent': '0x16-api_advanced:project:\
-v1.0.0 (by /u/shobi_ola)'}
+    headers = {'user-agent': '0x16-api_advanced:project:v1.0.0 (by /u/shobi_ola)'}
     params = {'limit': 10}
     info = requests.get('{}/r/{}/hot.json'.format(endpoint, subreddit),
                         allow_redirects=False,
@@ -27,4 +27,4 @@ v1.0.0 (by /u/shobi_ola)'}
         for post in json_info.get('data').get('children'):
             print(post.get('data').get('title'))
     else:
-        print("OK", end="")
+        print(None)  # Print None for invalid subreddit
