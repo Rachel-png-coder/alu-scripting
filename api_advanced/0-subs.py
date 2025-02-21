@@ -1,16 +1,24 @@
 #!/usr/bin/python3
-""""Doc"""
+'''A module containing functions for working with the Reddit API.
+'''
+
 import requests
 
 
 def number_of_subscribers(subreddit):
-    """ "Doc"""
+    """Return the total number of subscribers on a given subreddit."""
     url = "https://www.reddit.com/r/{}/about.json".format(subreddit)
+    headers = {"User-Agent": "Python/requests"}
+    response = requests.get(url, headers=headers, allow_redirects=False)
 
-    res = requests.get(url, headers={"User-Agent": "Mozilla/5.0"})
-
-    if res.status_code != 200:
+    if response.status_code == 404:
         return 0
-    else:
-        json_response = res.json()
-        return json_response.get("data").get("subscribers")
+
+    try:
+        results = response.json().get("data")
+        if results:
+            return results.get("subscribers", 0)
+    except ValueError:
+        return 0
+
+    return 0
