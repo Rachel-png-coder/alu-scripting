@@ -1,32 +1,17 @@
 #!/usr/bin/python3
-"""A module to query the Reddit API for hot posts."""
+"""Prints the title of the first 10 hot posts listed for a given subreddit"""
+
 import requests
 
 
 def top_ten(subreddit):
-    """Prints the titles of the first 10 hot posts listed in a subreddit."""
-    url = "https://www.reddit.com/r/{}/hot.json?limit=10".format(subreddit)
+    """Main function"""
+    URL = "https://www.reddit.com/r/{}/hot.json?limit=10".format(subreddit)
 
-    # Send a GET request to the subreddit URL
-    res = requests.get(
-        url, headers={"User -Agent": "Mozilla/5.0"}, allow_redirects=False
-    )
-
-    # Check if the request was successful
-    if res.status_code != 200:
-        print("OK")  # Print "OK" if the subreddit is invalid
-        return
-
-    # Parse the JSON response
-    json_response = res.json()
-    posts = json_response.get("data", {}).get("children", [])
-
-    # Print the titles of the first 10 hot posts
-    for post in posts:
-        print(post.get("data", {}).get("title"))
-
-# Test the function with the learnpython subreddit
-top_ten("learnpython")  # This should print the titles of the top 10 posts
-
-# Test the function with an invalid subreddit to see "OK"
-top_ten("invalid_subreddit")  # This should print "OK"
+    HEADERS = {"User-Agent": "PostmanRuntime/7.35.0"}
+    try:
+        RESPONSE = requests.get(URL, headers=HEADERS, allow_redirects=False)
+        HOT_POSTS = RESPONSE.json().get("data").get("children")
+        [print(post.get('data').get('title')) for post in HOT_POSTS]
+    except Exception:
+        print(None)
