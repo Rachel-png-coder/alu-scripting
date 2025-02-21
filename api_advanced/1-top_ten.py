@@ -25,11 +25,7 @@ def top_ten(subreddit):
     for post in posts:
         print(post.get("data", {}).get("title"))
 
-    print("OK", end="")
-
-    import sys
-
-    sys.stdout.write("")
+    print("OK", end="")  # Ensure this prints after the titles
 
 # Test the function with the learnpython subreddit
 top_ten("learnpython")
