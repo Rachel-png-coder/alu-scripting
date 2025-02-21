@@ -9,6 +9,8 @@ import requests
 BASE_URL = 'https://www.reddit.com'
 '''Reddit's base API URL.'''
 
+
+
 def top_ten(subreddit):
     '''Retrieves the title of the top ten posts from a given subreddit.'''
     api_headers = {
@@ -43,5 +45,4 @@ def top_ten(subreddit):
         except KeyError:
             print(None)
     else:
-
-        print("OK") 
+       print("OK")
